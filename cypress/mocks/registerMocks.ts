@@ -2,12 +2,15 @@ import { FailedLoginResponse } from "../types/loginTypes"
 import { User } from "../types/registerTypes"
 import { loginResponseFrom } from "../utils/loginResponseUtil"
 
-export const loginMocks = {
+
+export const registerMocks = {
 
     mockSuccess: (user: User) => {
-        cy.intercept('POST', '**/users/signin', {
-            statusCode: 200,
-            body: loginResponseFrom(user)
+        cy.intercept('POST', '**/users/signup', {
+            statusCode: 201,
+            body: {
+                "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2Rhc2RhcyIsImF1dGgiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ0xJRU5UIn1dLCJpYXQiOjE3MjcwMDYyNzksImV4cCI6MTcyNzAwNjU3OX0.47F0qOmQ0C0pdPmDqEFCqru7Rw1T_L9vy_UIMqzuo44"
+            }
         })
     },
 
@@ -15,7 +18,7 @@ export const loginMocks = {
         cy.intercept('POST', '**/users/signin', {
             statusCode: 422,
             body: getFailedLoginBody(errorMessage)
-        }).as('loginRequest')
+        })
     }
 
 }

@@ -31,7 +31,7 @@ describe('Login page tests is isolation', () => {
     cy.percySnapshot('HomePage')
   })
 
-  it('should fail to login', () => {
+  it.only('should fail to login', () => {
     // given
     const errorMessage = 'Invalid username/password supplied'
     loginMocks.mockFailure(errorMessage)
@@ -39,10 +39,20 @@ describe('Login page tests is isolation', () => {
     // when
     cy.get('.form-control').should('have.length', 2)
     cy.percySnapshot('LoginPage')
-    loginPage.attemptLogin('wrong', 'wrong')
 
+    const wrongUsername = 'Ola'
+    const wrongPassword = 'wrongPass'
+
+    loginPage.attemptLogin(wrongUsername, wrongPassword)
+    
     // then
     cy.get('.alert-danger').should('have.text', errorMessage)
+    cy.wait('@loginRequest').then((intercept) => {
+      expect(intercept.request.body).to.deep.equal({
+          username: wrongUsername,
+          password: wrongPassword
+      })
+    })
   })
 
   it('should open register page', () => {
